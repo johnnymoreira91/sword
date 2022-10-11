@@ -1,0 +1,4 @@
+- all tests
+- send message to manager, using kafka
+- inserir criptografia na senha ao criar usuario
+- melhorar segurança no jwt

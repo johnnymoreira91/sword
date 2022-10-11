@@ -7,6 +7,7 @@ import authRoute from './routes/authRoute'
 import taskRoute from './routes/taskRoute'
 import cors from 'cors'
 import dotenv from 'dotenv'
+import { KafkaListenDTO } from '@useCases/KafkaListen/KafkaListenDTO'
 dotenv.config()
 
 const app = express()
@@ -20,6 +21,8 @@ app.use('/user', userRoute)
 app.use('/admin', adminRoute)
 app.use('/auth', authRoute)
 app.use('/task', taskRoute)
+
+KafkaListenDTO()
 
 app.get('/', (request, response) => {
   return response.json({ message: 'Welcame to SOLID nodejs API' })

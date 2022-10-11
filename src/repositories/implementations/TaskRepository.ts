@@ -5,11 +5,11 @@ import { ITaskRepository } from '@repositories/ITaskRepository'
 
 class TaskRepository implements ITaskRepository {
   async list (): Promise<Task[]> {
-    return TaskModel.query()
+    return TaskModel.query().orderBy('active', 'DESC')
   }
 
-  async listByUser (user_id: string): Promise<Task[]> {
-    return TaskModel.query().where('user_id', user_id)
+  async listByUser (user_id: number): Promise<Task[]> {
+    return TaskModel.query().where('user_id', user_id).orderBy('active', 'DESC')
   }
 
   async findByPublicId (task_public_id: string): Promise<Task> {
@@ -28,6 +28,13 @@ class TaskRepository implements ITaskRepository {
       return TaskModel.query(trx).insert({ ...task })
     })
     return data
+  }
+
+  async deleteById (task_public_id: string): Promise<void> {
+    const task = await TaskModel.query().where('public_id', task_public_id).first()
+    await database.transaction(async trx => {
+      await TaskModel.query(trx).deleteById(task.id)
+    })
   }
 }
 

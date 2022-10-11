@@ -7,7 +7,7 @@ class DeleteUserUseCase {
   ) {}
 
   async execute (data: IDeleteUserRequestDTO): Promise<void> {
-    await this.usersRepository.deleteById(data.id)
+    await this.usersRepository.deleteById(data.public_id)
   }
 }
 

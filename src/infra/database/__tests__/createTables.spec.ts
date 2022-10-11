@@ -9,11 +9,12 @@ describe('Create Tables test', () => {
 
   it('Should create tables with sucess', async () => {
     const tables = await createSchema()
-    expect(tables.message).toBe('Tables created')
+    expect(tables).toBe(true)
   })
 
-  // it('Should try to create duplicated tables', async () => {
-  //   const tables = await createSchema()
-  //   expect(tables.message).toBe(undefined)
-  // })
+  it('Should try to create duplicated user table', async () => {
+    await createSchema()
+    const tables = await createSchema()
+    expect(tables).toBe(false)
+  })
 })

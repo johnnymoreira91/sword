@@ -4,19 +4,18 @@ import { DeleteUserUseCase } from './DeleteUserUseCase'
 class DeleteUserController {
   constructor (
     private deleteUserUseCase: DeleteUserUseCase
-  ) {}
+  ) { }
 
-  async handle (req: Request<{id: string}, {}, {
-  }>, res: Response): Promise<Response> {
-    const { id } = req.params
+  async handle (req: Request<{ public_id: string }, {}, {}>, res: Response): Promise<Response> {
+    const { public_id } = req.params
     try {
-      if (!id) {
+      if (!public_id) {
         return res.status(400).json({
-          message: 'Id cannot be null'
+          message: 'public_id cannot be null'
         })
       }
 
-      await this.deleteUserUseCase.execute({ id })
+      await this.deleteUserUseCase.execute({ public_id })
 
       return res.status(201).send()
     } catch (error) {

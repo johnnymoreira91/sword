@@ -1,5 +1,5 @@
 class IDeleteUserRequestDTO {
-  id: string;
+  public_id: string;
 }
 
 export { IDeleteUserRequestDTO }

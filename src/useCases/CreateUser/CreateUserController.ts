@@ -1,5 +1,6 @@
 import { Request, Response } from 'express'
 import { CreateUserUseCase } from './CreateUserUseCase'
+import bcrypt from 'bcrypt'
 
 class CreateUserController {
   constructor (
@@ -17,10 +18,12 @@ class CreateUserController {
           error: 'Params is missing'
         })
       }
+
+      const hash = bcrypt.hashSync(password, bcrypt.genSaltSync(10))
       const data = await this.createUserUseCase.execute({
         name,
         email,
-        password,
+        password: hash,
         age,
         active: active || true,
         permission: permission || 0

@@ -1,12 +1,10 @@
 import { User } from '@entities/User'
-import { IPermissionRepository } from '@repositories/IPermissionRepository'
 import { IUsersRepository } from '@repositories/IUsersRepository'
 import { ICreateUserRequestDTO } from './CreateUserDTO'
 
 class CreateUserUseCase {
   constructor (
-    private usersRepository: IUsersRepository,
-    private permissionRepository: IPermissionRepository
+    private usersRepository: IUsersRepository
   ) {}
 
   async execute (data: ICreateUserRequestDTO): Promise<User> {
@@ -14,13 +12,6 @@ class CreateUserUseCase {
     if (userAlreadyExist) {
       throw new Error('User already exist')
     }
-
-    const permission = await this.permissionRepository.findByLevel(data.permission)
-    if (!permission) {
-      throw new Error('Permission not found')
-    }
-
-    data.permission = permission.id
 
     const user = new User(data)
     return await this.usersRepository.save(user)

@@ -6,20 +6,19 @@ class EditUserController {
     private editUserUseCase: EditUserUseCase
   ) {}
 
-  async handle (req: Request<{id: number}, {}, {
+  async handle (req: Request<{public_id: string}, {}, {
     name: string, email: string, password: string, age: number, active: boolean,
     permission: number
   }>, res: Response): Promise<Response> {
-    const { id } = req.params
+    const { public_id } = req.params
     const { name, email, password, age, active, permission } = req.body
     try {
-      if (!id) {
+      if (!public_id) {
         return res.status(400).json({
-          message: 'Id cannot be null'
+          message: 'Public_id cannot be null'
         })
       }
       const data = await this.editUserUseCase.execute({
-        id: id,
         email: email,
         name: name,
         password: password,

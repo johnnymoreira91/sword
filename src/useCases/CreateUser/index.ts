@@ -1,14 +1,11 @@
-import { PermissionRepository } from '@repositories/implementations/PermissionRepository'
 import { UsersRepository } from '@repositories/implementations/UsersRepository'
 import { CreateUserController } from './CreateUserController'
 import { CreateUserUseCase } from './CreateUserUseCase'
 
 const usersRepository = new UsersRepository()
-const permissionRepository = new PermissionRepository()
 
 const createUserUseCase = new CreateUserUseCase(
-  usersRepository,
-  permissionRepository
+  usersRepository
 )
 
 const createUserController = new CreateUserController(

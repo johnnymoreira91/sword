@@ -1,8 +1,9 @@
 import { database } from '@database/knex'
-import { PermissionModel } from '@database/ModelInfra/Permission'
+import { createPermissions } from './seeds/permission'
+import { createUsers } from './seeds/user'
 
 async function createSchema (): Promise<boolean> {
-  if (await !database.schema.hasTable('users')) {
+  if (await database.schema.hasTable('permissions')) {
     return false
   }
 
@@ -10,22 +11,23 @@ async function createSchema (): Promise<boolean> {
   // to do this. We create it here for simplicity.
   await database.schema.createTable('permissions', table => {
     table.increments('id').primary()
-    table.integer('level', 2).notNullable()
+    table.integer('level', 2).unique()
     table.string('name', 100).notNullable()
-    table.timestamps(true, true)
+    table.timestamp('created_at').defaultTo(database.raw('CURRENT_TIMESTAMP'))
+    table.timestamp('updated_at').defaultTo(database.raw('CURRENT_TIMESTAMP'))
   })
 
   await database.schema.createTable('users', table => {
     table.increments('id').primary()
     table.uuid('public_id').unique()
     table.string('name', 100).notNullable()
-    table.string('email', 100).notNullable()
+    table.string('email', 100).notNullable().unique()
     table.string('password', 100).notNullable()
-    table.integer('permission', 2).unsigned().references('id').inTable('permissions').notNullable()
+    table.integer('permission', 2).unsigned().references('id').inTable('permissions').notNullable().onUpdate('CASCADE')
     table.integer('age', 3).notNullable()
-    table.boolean('isGuest').defaultTo(false)
     table.boolean('active').defaultTo(true)
-    table.timestamps(true, true)
+    table.timestamp('created_at').defaultTo(database.raw('CURRENT_TIMESTAMP'))
+    table.timestamp('updated_at').defaultTo(database.raw('CURRENT_TIMESTAMP'))
   })
 
   await database.schema.createTable('tasks', table => {
@@ -35,32 +37,14 @@ async function createSchema (): Promise<boolean> {
     table.string('summary', 2500).notNullable()
     table.boolean('active').defaultTo(true)
     table.timestamp('completed_at').nullable()
-    table.timestamps(true, true)
+    table.timestamp('created_at').defaultTo(database.raw('CURRENT_TIMESTAMP'))
+    table.timestamp('updated_at').defaultTo(database.raw('CURRENT_TIMESTAMP'))
   })
 
-  const retPermission = await createPermissions()
-  if (retPermission === false) {
-    return false
-  }
-  return true
-}
+  await createPermissions()
+  await createUsers()
 
-async function createPermissions (): Promise<boolean> {
-  try {
-    await database.transaction(async trx => {
-      await PermissionModel.query(trx).insert({
-        name: 'Technician',
-        level: 0
-      })
-      await PermissionModel.query(trx).insert({
-        name: 'Manager',
-        level: 1
-      })
-    })
-    return true
-  } catch (error) {
-    return false
-  }
+  return true
 }
 
 export { createSchema }

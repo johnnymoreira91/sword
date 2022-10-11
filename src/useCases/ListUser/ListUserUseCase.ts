@@ -9,7 +9,7 @@ class ListUserUseCase {
   async execute (): Promise<User[]> {
     const users = await this.usersRepository.list()
 
-    if (!users) {
+    if (users.length === 0) {
       throw new Error('Any Users found')
     }
 

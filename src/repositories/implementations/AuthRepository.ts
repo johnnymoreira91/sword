@@ -1,7 +1,9 @@
 import { Response } from 'express'
 import { CacheService } from '@infra/services/CacheService'
 import { User } from '@entities/User'
-import * as jwt from 'jsonwebtoken'
+import crypto from 'crypto'
+import jwt from 'jsonwebtoken'
+import bcrypt from 'bcrypt'
 import { LoginReturn } from '@shared/interfaces/LoginReturn'
 
 class AuthRepository {
@@ -10,7 +12,8 @@ class AuthRepository {
   ) {}
 
   async doLogin (login: User, password: string, ip: string, cacheKey: string, res: Response): Promise<LoginReturn> {
-    if (password === login.password) {
+    const hash = bcrypt.compareSync(password, login.password)
+    if (hash) {
       const user = login
       const accessToken = jwt.sign(
         {
@@ -26,13 +29,13 @@ class AuthRepository {
       res.setHeader('authorization', accessToken) // ver o que fazer dps
       const body = {
         message: `${login.email} has been authenticated`,
-        accessToken,
+        accessToken, // crypto.randomBytes(24).toString('hex'),
         user: user,
         id: user.public_id,
         ip: ip
       }
 
-      await this.cacheService.setCache(cacheKey, body, 30)
+      await this.cacheService.setCache(cacheKey, body, 3)
       return body
     } else {
       throw new Error('Error User/Password')

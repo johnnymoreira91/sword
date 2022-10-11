@@ -5,7 +5,8 @@ import { IEditTaskRequestDTO } from './EditTaskDTO'
 
 class EditTaskUseCase {
   constructor (
-    private taskRepository: ITaskRepository
+    private taskRepository: ITaskRepository,
+    private userRepository: IUsersRepository
   ) {}
 
   async execute (data: IEditTaskRequestDTO): Promise<Task> {
@@ -13,6 +14,11 @@ class EditTaskUseCase {
 
     if (!findTask) {
       throw new Error('Task not found')
+    }
+
+    const user = await this.userRepository.findById(data.user_id)
+    if (user.id !== findTask.user_id) {
+      throw new Error('This task doesnt belong to you')
     }
 
     findTask.summary = data.summary

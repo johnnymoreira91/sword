@@ -14,7 +14,7 @@ class EditUserUseCase {
       throw new Error('User not found')
     }
 
-    const userData = await this.usersRepository.update(findUser.public_id, data)
+    const userData = await this.usersRepository.update(findUser.public_id, Object.assign(findUser, data))
     return userData
   }
 }
