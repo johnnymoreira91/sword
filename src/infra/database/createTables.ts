@@ -34,6 +34,7 @@ async function createSchema (): Promise<boolean> {
     table.integer('user_id', 5).notNullable().index().unsigned().references('id').inTable('users')
     table.string('summary', 2500).notNullable()
     table.boolean('active').defaultTo(true)
+    table.timestamp('completed_at').nullable()
     table.timestamps(true, true)
   })
 

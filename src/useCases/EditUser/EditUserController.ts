@@ -6,11 +6,12 @@ class EditUserController {
     private editUserUseCase: EditUserUseCase
   ) {}
 
-  async handle (req: Request<{id: string}, {}, {
-    name: string, email: string, password: string
+  async handle (req: Request<{id: number}, {}, {
+    name: string, email: string, password: string, age: number, active: boolean,
+    permission: number
   }>, res: Response): Promise<Response> {
     const { id } = req.params
-    const { name, email, password } = req.body
+    const { name, email, password, age, active, permission } = req.body
     try {
       if (!id) {
         return res.status(400).json({
@@ -21,7 +22,10 @@ class EditUserController {
         id: id,
         email: email,
         name: name,
-        password: password
+        password: password,
+        age,
+        active,
+        permission
       })
       return res.status(200).json(data)
     } catch (error) {

@@ -6,6 +6,9 @@ class TaskModel extends Model {
   user_id: number
   summary: string
   active: boolean
+  completed_at?: Date
+  created_at: Date
+  updated_at: Date
 
   static get tableName () {
     return 'tasks'
