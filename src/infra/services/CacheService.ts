@@ -1,7 +1,7 @@
 import NodeCache from 'node-cache'
 
 class CacheService {
-  private readonly ttl = 10 // default 60 seconds
+  private readonly ttl = 20 // default 20 seconds
   private dataCache = new NodeCache({ stdTTL: this.ttl, checkperiod: 120 })
 
   constructor () {
